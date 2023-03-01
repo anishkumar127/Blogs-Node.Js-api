@@ -1,4 +1,5 @@
 import userModel from "../model/user";
+import bcrypt from "bcryptjs";
 export const getAllUsers = async (req, res, next) => {
   let users;
   try {
@@ -26,11 +27,11 @@ export const signUp = async (req, res, next) => {
       .status(400)
       .json({ message: "User Already Exits! Login Instead" });
   }
-
+  const hashedPassword = bcrypt.hashSync(password);
   const user = new userModel({
     name,
     email,
-    password,
+    password: hashedPassword,
   });
   let savedUser;
   try {

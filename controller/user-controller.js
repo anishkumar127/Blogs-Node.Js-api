@@ -1,5 +1,5 @@
 import userModel from "../model/user";
-const getAllUsers = async (req, res, next) => {
+export const getAllUsers = async (req, res, next) => {
   let users;
   try {
     users = await userModel.find();
@@ -8,7 +8,36 @@ const getAllUsers = async (req, res, next) => {
   }
 
   if (!users) {
-    return res.status(404).json({ message: "Internal Server Error!" });
+    return res.status(404).json({ message: "No User Found!" });
   }
   return res.status(200).json({ users });
+};
+
+export const signUp = async (req, res, next) => {
+  const { name, email, password } = req.body;
+  let existingUser;
+  try {
+    existingUser = await userModel.findOne({ email });
+  } catch (err) {
+    console.log(err);
+  }
+  if (existingUser) {
+    return res
+      .status(400)
+      .json({ message: "User Already Exits! Login Instead" });
+  }
+
+  const user = new userModel({
+    name,
+    email,
+    password,
+  });
+  let savedUser;
+  try {
+    savedUser = await user.save();
+  } catch (err) {
+    console.log(err);
+  }
+
+  return res.status(201).json({ savedUser });
 };

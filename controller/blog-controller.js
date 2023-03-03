@@ -49,3 +49,31 @@ export const updateBlogs = async (req, res, next) => {
 
   return res.status(200).json({ blog });
 };
+
+export const getById = async (req, res, next) => {
+  const { id } = req.params;
+  let blogs;
+  try {
+    blogs = await blogModel.findById(id);
+  } catch (err) {
+    console.log(err);
+  }
+  if (!blogs) {
+    return res.status(404).json({ message: "Blogs not found!" });
+  }
+  return res.status(200).json({ blogs });
+};
+
+export const removeBlogs = async (req, res, next) => {
+  const { id } = req.params;
+  let blogs;
+  try {
+    blogs = await blogModel.findByIdAndRemove(id);
+  } catch (err) {
+    console.log(err);
+  }
+  if (!blogs) {
+    return res.status(404).json({ message: "Blogs not found!" });
+  }
+  return res.status(200).json({ message: "Deleted Successfully!", blogs });
+};
